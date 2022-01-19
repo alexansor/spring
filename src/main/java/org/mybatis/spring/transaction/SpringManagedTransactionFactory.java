@@ -26,6 +26,7 @@ import org.apache.ibatis.transaction.TransactionFactory;
 
 /**
  * Creates a {@code SpringManagedTransaction}.
+ * mybatis spring事务工厂
  *
  * @author Hunter Presnall
  */

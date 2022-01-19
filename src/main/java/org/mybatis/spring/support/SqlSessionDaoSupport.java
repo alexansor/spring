@@ -32,6 +32,8 @@ import org.springframework.dao.support.DaoSupport;
  * {code Autowired} was removed from setSqlSessionTemplate and setSqlSessionFactory
  * in version 1.2.0.
  * 
+ * SqlSession配置类，用于获取sql连接
+ * 
  * @author Putthibong Boonbong
  *
  * @see #setSqlSessionFactory
@@ -59,6 +61,7 @@ public abstract class SqlSessionDaoSupport extends DaoSupport {
    * Users should use this method to get a SqlSession to call its statement methods
    * This is SqlSession is managed by spring. Users should not commit/rollback/close it
    * because it will be automatically done.
+   * 这个方法类似JdbcDaoSupport的getConnection之类的，用户获取连接
    *
    * @return Spring managed thread safe SqlSession
    */
@@ -68,6 +71,7 @@ public abstract class SqlSessionDaoSupport extends DaoSupport {
 
   /**
    * {@inheritDoc}
+   * 连接池校验
    */
   @Override
   protected void checkDaoConfig() {

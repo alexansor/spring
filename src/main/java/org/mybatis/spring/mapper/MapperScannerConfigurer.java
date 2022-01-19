@@ -84,6 +84,8 @@ import org.springframework.util.StringUtils;
  *   </bean>
  * }
  * </pre>
+ * 
+ * 扫描mapper注册到spring容器中
  *
  * @author Hunter Presnall
  * @author Eduardo Macarron

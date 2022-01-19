@@ -33,6 +33,7 @@ import org.springframework.transaction.TransactionException;
  * {@code DataAccessException} using Spring's {@code SQLExceptionTranslator}
  * Can load {@code SQLExceptionTranslator} eagerly or when the
  * first exception is translated.
+ * 异常转换器
  *
  * @author Eduardo Macarron
  */

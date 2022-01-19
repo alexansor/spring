@@ -38,6 +38,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * assuming that the Spring transaction manager will do the job.
  * <p>
  * If it is not it will behave like {@code JdbcTransaction}.
+ * 
+ * mybatis事务管理器，用户管理数据库连接、事务回滚、超时时间配置等
  *
  * @author Hunter Presnall
  * @author Eduardo Macarron

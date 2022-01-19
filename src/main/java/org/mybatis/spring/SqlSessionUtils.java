@@ -35,6 +35,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 /**
  * Handles MyBatis SqlSession life cycle. It can register and get SqlSessions from
  * Spring {@code TransactionSynchronizationManager}. Also works if no transaction is active.
+ * MyBatis事务会话管理相关类
  *
  * @author Hunter Presnall 
  * @author Eduardo Macarron
@@ -85,7 +86,8 @@ public final class SqlSessionUtils {
 
     notNull(sessionFactory, NO_SQL_SESSION_FACTORY_SPECIFIED);
     notNull(executorType, NO_EXECUTOR_TYPE_SPECIFIED);
-
+    
+    // 通过holder进行连接管理
     SqlSessionHolder holder = (SqlSessionHolder) TransactionSynchronizationManager.getResource(sessionFactory);
 
     SqlSession session = sessionHolder(executorType, holder);

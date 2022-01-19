@@ -80,8 +80,10 @@ public class SqlSessionTemplate implements SqlSession, DisposableBean {
 
   private final ExecutorType executorType;
 
+  // 这里之所以使用proxy的叫法，是因为要做统一事务管理，可参考HibernateTransactionManager
   private final SqlSession sqlSessionProxy;
 
+  // 持久化异常转化器
   private final PersistenceExceptionTranslator exceptionTranslator;
 
   /**

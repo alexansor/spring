@@ -37,6 +37,7 @@ import org.springframework.util.StringUtils;
  * MyBatis mapper scanning. Using an @Enable annotation allows beans to be
  * registered via @Component configuration, whereas implementing
  * {@code BeanDefinitionRegistryPostProcessor} will work for XML configuration.
+ * mapper注解扫描注册器
  *
  * @author Michael Lanyon
  * @author Eduardo Macarron
@@ -46,6 +47,7 @@ import org.springframework.util.StringUtils;
  * @since 1.2.0
  */
 public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware {
+  // 实现ResourceLoaderAware用于注入resourceLoader
 
   private ResourceLoader resourceLoader;
 
@@ -56,6 +58,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
   public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
 
     AnnotationAttributes annoAttrs = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(MapperScan.class.getName()));
+    // 将beanDefinitionRegistry传入mapperScanner中
     ClassPathMapperScanner scanner = new ClassPathMapperScanner(registry);
 
     // this check is needed in Spring 3.1
@@ -63,6 +66,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
       scanner.setResourceLoader(resourceLoader);
     }
 
+    // 开始解析注解值
     Class<? extends Annotation> annotationClass = annoAttrs.getClass("annotationClass");
     if (!Annotation.class.equals(annotationClass)) {
       scanner.setAnnotationClass(annotationClass);
@@ -78,6 +82,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
       scanner.setBeanNameGenerator(BeanUtils.instantiateClass(generatorClass));
     }
 
+    // 默认实例化为MapperFactoryBean，如果自定义，则更新为自定义类型
     Class<? extends MapperFactoryBean> mapperFactoryBeanClass = annoAttrs.getClass("factoryBean");
     if (!MapperFactoryBean.class.equals(mapperFactoryBeanClass)) {
       scanner.setMapperFactoryBean(BeanUtils.instantiateClass(mapperFactoryBeanClass));
@@ -100,7 +105,9 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
     for (Class<?> clazz : annoAttrs.getClassArray("basePackageClasses")) {
       basePackages.add(ClassUtils.getPackageName(clazz));
     }
+    // 过滤器注册
     scanner.registerFilters();
+    // 扫描配置
     scanner.doScan(StringUtils.toStringArray(basePackages));
   }
 

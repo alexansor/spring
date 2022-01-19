@@ -27,6 +27,8 @@ import org.springframework.transaction.support.ResourceHolderSupport;
  * The {@code SqlSessionFactory} that created that {@code SqlSession} is used as a key.
  * {@code ExecutorType} is also kept to be able to check if the user is trying to change it
  * during a TX (that is not allowed) and throw a Exception in that case.
+ * 
+ * 数据库连接持有者，将连接放在一个持有者进行管理可将事务与线程绑定
  *
  * @author Hunter Presnall
  * @author Eduardo Macarron

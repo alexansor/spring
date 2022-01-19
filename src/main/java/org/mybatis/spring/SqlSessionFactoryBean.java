@@ -63,6 +63,10 @@ import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
  * Either {@code DataSourceTransactionManager} or {@code JtaTransactionManager} can be used for transaction
  * demarcation in combination with a {@code SqlSessionFactory}. JTA should be used for transactions
  * which span multiple databases or when container managed transactions (CMT) are being used.
+ * 
+ * MyBatis SqlSessionFactory的Spring bean包装，内部持有一个sqlSessionFactory
+ * 通过getObject方法获取到sqlSessionFactory对象
+ * 这是一种在spring应用中共享sqlSessionFactory的通用方式
  *
  * @author Putthibong Boonbong
  * @author Hunter Presnall
@@ -372,11 +376,12 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
    */
   @Override
   public void afterPropertiesSet() throws Exception {
+    // 参数校验
     notNull(dataSource, "Property 'dataSource' is required");
     notNull(sqlSessionFactoryBuilder, "Property 'sqlSessionFactoryBuilder' is required");
     state((configuration == null && configLocation == null) || !(configuration != null && configLocation != null),
               "Property 'configuration' and 'configLocation' can not specified with together");
-
+    // 构建sqlSessionFactory
     this.sqlSessionFactory = buildSqlSessionFactory();
   }
 
@@ -397,15 +402,19 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
     XMLConfigBuilder xmlConfigBuilder = null;
     if (this.configuration != null) {
       configuration = this.configuration;
+      // 将spring中配置的properties添加到variables中
       if (configuration.getVariables() == null) {
         configuration.setVariables(this.configurationProperties);
       } else if (this.configurationProperties != null) {
         configuration.getVariables().putAll(this.configurationProperties);
       }
     } else if (this.configLocation != null) {
+      // 设置mybatis-config.xml配置，这里并不进行解析，最后面才解析
       xmlConfigBuilder = new XMLConfigBuilder(this.configLocation.getInputStream(), null, this.configurationProperties);
+      // 这里拿到的configuration是空的，并没有实际的配置信息
       configuration = xmlConfigBuilder.getConfiguration();
     } else {
+      // configuration和configLocation必须填一个，否则用mybatis默认配置
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Property 'configuration' or 'configLocation' not specified, using default MyBatis Configuration");
       }
@@ -415,10 +424,12 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
       }
     }
 
+    // 设置objectFactory
     if (this.objectFactory != null) {
       configuration.setObjectFactory(this.objectFactory);
     }
 
+    // 设置objectWrapperFactory
     if (this.objectWrapperFactory != null) {
       configuration.setObjectWrapperFactory(this.objectWrapperFactory);
     }
@@ -427,6 +438,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
       configuration.setVfsImpl(this.vfs);
     }
 
+    // 扫描别名包
     if (hasLength(this.typeAliasesPackage)) {
       String[] typeAliasPackageArray = tokenizeToStringArray(this.typeAliasesPackage,
           ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
@@ -438,7 +450,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
         }
       }
     }
-
+    // 设置别名
     if (!isEmpty(this.typeAliases)) {
       for (Class<?> typeAlias : this.typeAliases) {
         configuration.getTypeAliasRegistry().registerAlias(typeAlias);
@@ -485,10 +497,12 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
       }
     }
 
+    // 设置缓存
     if (this.cache != null) {
       configuration.addCache(this.cache);
     }
 
+    // 如果设置了configLocation，则解析文件
     if (xmlConfigBuilder != null) {
       try {
         xmlConfigBuilder.parse();
@@ -502,7 +516,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
         ErrorContext.instance().reset();
       }
     }
-
+    // 如果没有配置事务管理器，则使用SpringManagedTransactionFactory
     if (this.transactionFactory == null) {
       this.transactionFactory = new SpringManagedTransactionFactory();
     }
@@ -535,6 +549,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
       }
     }
 
+    // 创建sqlSessionFactory
     return this.sqlSessionFactoryBuilder.build(configuration);
   }
 

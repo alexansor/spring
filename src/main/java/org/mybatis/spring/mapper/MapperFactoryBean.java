@@ -46,6 +46,9 @@ import org.springframework.beans.factory.FactoryBean;
  * </pre>
  * <p>
  * Note that this factory can only inject <em>interfaces</em>, not concrete classes.
+ * 
+ * 实现了FactoryBean接口，MyBatis的mapper实例其实就是保存在这个对象中，通过getObject方法获取到具体的mapper实例对象
+ * mapperInterface是mybatis代理的对象接口
  *
  * @author Eduardo Macarron
  *

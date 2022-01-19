@@ -46,6 +46,7 @@ import org.springframework.util.StringUtils;
  * <p>
  * This functionality was previously a private class of
  * {@link MapperScannerConfigurer}, but was broken out in version 1.2.0.
+ * 扫描包路径的所有类
  *
  * @author Hunter Presnall
  * @author Eduardo Macarron

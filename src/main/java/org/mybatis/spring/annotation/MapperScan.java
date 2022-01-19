@@ -58,6 +58,8 @@ import org.springframework.context.annotation.Import;
  *   }
  * }
  * </pre>
+ * 
+ * mapper扫描注解，用于配置扫描基包等
  *
  * @author Michael Lanyon
  * @author Eduardo Macarron
