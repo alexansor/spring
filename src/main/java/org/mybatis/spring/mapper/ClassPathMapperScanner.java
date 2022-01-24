@@ -115,6 +115,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
    * those annotated with the annotationClass
    */
   public void registerFilters() {
+    // 默认如果没有设置过滤器则允许全部mapper
     boolean acceptAllInterfaces = true;
 
     // if specified, use the given annotation and / or marker interface

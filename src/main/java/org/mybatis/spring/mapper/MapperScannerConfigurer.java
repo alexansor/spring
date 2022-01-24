@@ -298,6 +298,7 @@ public class MapperScannerConfigurer implements BeanDefinitionRegistryPostProces
    * {@inheritDoc}
    * 
    * @since 1.0.2
+   * beanDefinition后置处理器
    */
   @Override
   public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
